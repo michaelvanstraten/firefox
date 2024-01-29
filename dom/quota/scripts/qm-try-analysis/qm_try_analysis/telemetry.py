@@ -5,6 +5,7 @@
 import time
 
 import requests
+from halo import Halo
 
 from qm_try_analysis.logging import info
 
@@ -21,28 +22,30 @@ def query(key, query, p_params):
     info(f"Started job {job_id}")
 
     poll_url = TELEMETRY_BASE_URL + f"jobs/{job_id}"
-    info(f"Polling query status from {poll_url}")
     poll = True
     status = 0
     qresultid = 0
-    while poll:
-        print(".", end="", flush=True)
-        resp = requests.get(url=poll_url, headers=headers)
-        status = resp.json()["job"]["status"]
-        if status > 2:
-            # print(resp.json())
-            poll = False
-            qresultid = resp.json()["job"]["query_result_id"]
-        else:
-            time.sleep(0.2)
-    print(".")
-    info(f"Finished with status {status}")
+    with Halo(text=f"Polling query status from {poll_url}", spinner="dots") as spinner:
+        while poll:
+            resp = requests.get(url=poll_url, headers=headers)
+            status = resp.json()["job"]["status"]
+            if status > 2:
+                # print(resp.json())
+                poll = False
+                qresultid = resp.json()["job"]["query_result_id"]
+                spinner.succeed()
+            else:
+                time.sleep(0.2)
 
     if status == 3:
         results_url = TELEMETRY_BASE_URL + f"queries/78691/results/{qresultid}.json"
 
-        info(f"Querying result from {results_url}")
-        resp = requests.get(url=results_url, headers=headers)
+        with Halo(
+            text=f"Querying result from {results_url}", spinner="dots"
+        ) as spinner:
+            resp = requests.get(url=results_url, headers=headers)
+            spinner.succeed()
+
         return resp.json()
 
     return {"query_result": {"data": {"rows": {}}}}
