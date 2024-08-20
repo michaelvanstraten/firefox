@@ -1,0 +1,44 @@
+schema: 1
+
+bugzilla:
+    product: "Firefox"
+    component: "Storage: Quota Manager"
+
+origin:
+    name: opentelemetry-cpp
+    description: The OpenTelemetry C++ Client
+    url: https://opentelemetry.io/
+
+    release: 41538b0525963031747d61c7775e1246231c7049 (2024-08-09T11:38:17Z).
+    revision: 41538b0525963031747d61c7775e1246231c7049
+
+    license: Apache-2.0
+
+vendoring:
+    url: https://github.com/open-telemetry/opentelemetry-cpp
+    source-hosting: github
+
+    exclude:
+      - "**"
+
+    include:
+      - api/include/opentelemetry/common/
+      - api/include/opentelemetry/context/*.h
+      - api/include/opentelemetry/detail/
+      - api/include/opentelemetry/nostd/*.h
+      - api/include/opentelemetry/std/*.h
+      - api/include/opentelemetry/trace/
+      - api/include/opentelemetry/*.h
+      - exporters/ostream/
+      - sdk/include/opentelemetry/sdk/common/
+      - sdk/include/opentelemetry/sdk/instrumentationscope/
+      - sdk/include/opentelemetry/sdk/resource/
+      - sdk/include/opentelemetry/sdk/trace/
+      - sdk/include/opentelemetry/sdk/version/
+      - sdk/include/opentelemetry/*.h
+      - sdk/src/common/
+      - sdk/src/resource/
+      - sdk/src/trace/
+      - sdk/src/version/
+      - LICENSE
+      - README.md
