@@ -1,0 +1,32 @@
+# -*- Mode: python; indent-tabs-mode: nil; tab-width: 40 -*-
+# vim: set filetype=python:
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+Library("opentelemetry_exporter_ostream_span")
+
+SOURCES += [
+    "src/span_exporter.cc",
+    "src/span_exporter_factory.cc",
+]
+
+LOCAL_INCLUDES += [
+    "/third_party/opentelemetry-cpp/api/include",
+    "/third_party/opentelemetry-cpp/exporters/ostream/include",
+    "/third_party/opentelemetry-cpp/sdk/include",
+]
+
+USE_LIBS += [
+    "gkopentelemetry",
+]
+
+EXPORTS.opentelemetry.exporters.ostream += [
+    "include/opentelemetry/exporters/ostream/common_utils.h",
+    "include/opentelemetry/exporters/ostream/log_record_exporter.h",
+    "include/opentelemetry/exporters/ostream/log_record_exporter_factory.h",
+    "include/opentelemetry/exporters/ostream/metric_exporter.h",
+    "include/opentelemetry/exporters/ostream/metric_exporter_factory.h",
+    "include/opentelemetry/exporters/ostream/span_exporter.h",
+    "include/opentelemetry/exporters/ostream/span_exporter_factory.h",
+]

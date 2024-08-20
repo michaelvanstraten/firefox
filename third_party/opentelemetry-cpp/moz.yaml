@@ -18,6 +18,9 @@ vendoring:
     url: https://github.com/open-telemetry/opentelemetry-cpp
     source-hosting: github
 
+    patches:
+      - patches/0001-Instrument-lib-using-mozilla-build-system.patch
+
     exclude:
       - "**"
 

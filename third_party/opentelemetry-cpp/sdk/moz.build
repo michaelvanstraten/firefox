@@ -1,0 +1,93 @@
+# -*- Mode: python; indent-tabs-mode: nil; tab-width: 40 -*-
+# vim: set filetype=python:
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+DIRS += ["src"]
+
+EXPORTS.opentelemetry.sdk.common += [
+    "include/opentelemetry/sdk/common/atomic_shared_ptr.h",
+    "include/opentelemetry/sdk/common/atomic_unique_ptr.h",
+    "include/opentelemetry/sdk/common/attribute_utils.h",
+    "include/opentelemetry/sdk/common/attributemap_hash.h",
+    "include/opentelemetry/sdk/common/base64.h",
+    "include/opentelemetry/sdk/common/circular_buffer.h",
+    "include/opentelemetry/sdk/common/circular_buffer_range.h",
+    "include/opentelemetry/sdk/common/empty_attributes.h",
+    "include/opentelemetry/sdk/common/env_variables.h",
+    "include/opentelemetry/sdk/common/exporter_utils.h",
+    "include/opentelemetry/sdk/common/global_log_handler.h",
+]
+
+EXPORTS.opentelemetry.sdk.instrumentationscope += [
+    "include/opentelemetry/sdk/instrumentationscope/instrumentation_scope.h",
+]
+
+# EXPORTS.opentelemetry.sdk.logs += [
+#     "include/opentelemetry/sdk/logs/batch_log_record_processor.h",
+#     "include/opentelemetry/sdk/logs/batch_log_record_processor_factory.h",
+#     "include/opentelemetry/sdk/logs/batch_log_record_processor_options.h",
+#     "include/opentelemetry/sdk/logs/event_logger.h",
+#     "include/opentelemetry/sdk/logs/event_logger_provider.h",
+#     "include/opentelemetry/sdk/logs/event_logger_provider_factory.h",
+#     "include/opentelemetry/sdk/logs/exporter.h",
+#     "include/opentelemetry/sdk/logs/logger.h",
+#     "include/opentelemetry/sdk/logs/logger_context.h",
+#     "include/opentelemetry/sdk/logs/logger_context_factory.h",
+#     "include/opentelemetry/sdk/logs/logger_provider.h",
+#     "include/opentelemetry/sdk/logs/logger_provider_factory.h",
+#     "include/opentelemetry/sdk/logs/multi_log_record_processor.h",
+#     "include/opentelemetry/sdk/logs/multi_log_record_processor_factory.h",
+#     "include/opentelemetry/sdk/logs/multi_recordable.h",
+#     "include/opentelemetry/sdk/logs/processor.h",
+#     "include/opentelemetry/sdk/logs/read_write_log_record.h",
+#     "include/opentelemetry/sdk/logs/readable_log_record.h",
+#     "include/opentelemetry/sdk/logs/recordable.h",
+#     "include/opentelemetry/sdk/logs/simple_log_record_processor.h",
+#     "include/opentelemetry/sdk/logs/simple_log_record_processor_factory.h",
+# ]
+
+EXPORTS.opentelemetry.sdk.resource += [
+    "include/opentelemetry/sdk/resource/resource.h",
+    "include/opentelemetry/sdk/resource/resource_detector.h",
+    "include/opentelemetry/sdk/resource/semantic_conventions.h",
+]
+
+EXPORTS.opentelemetry.sdk.trace += [
+    "include/opentelemetry/sdk/trace/batch_span_processor.h",
+    "include/opentelemetry/sdk/trace/batch_span_processor_factory.h",
+    "include/opentelemetry/sdk/trace/batch_span_processor_options.h",
+    "include/opentelemetry/sdk/trace/exporter.h",
+    "include/opentelemetry/sdk/trace/id_generator.h",
+    "include/opentelemetry/sdk/trace/multi_recordable.h",
+    "include/opentelemetry/sdk/trace/multi_span_processor.h",
+    "include/opentelemetry/sdk/trace/processor.h",
+    "include/opentelemetry/sdk/trace/random_id_generator.h",
+    "include/opentelemetry/sdk/trace/random_id_generator_factory.h",
+    "include/opentelemetry/sdk/trace/recordable.h",
+    "include/opentelemetry/sdk/trace/sampler.h",
+    "include/opentelemetry/sdk/trace/simple_processor.h",
+    "include/opentelemetry/sdk/trace/simple_processor_factory.h",
+    "include/opentelemetry/sdk/trace/span_data.h",
+    "include/opentelemetry/sdk/trace/tracer.h",
+    "include/opentelemetry/sdk/trace/tracer_context.h",
+    "include/opentelemetry/sdk/trace/tracer_context_factory.h",
+    "include/opentelemetry/sdk/trace/tracer_provider.h",
+    "include/opentelemetry/sdk/trace/tracer_provider_factory.h",
+]
+
+EXPORTS.opentelemetry.sdk.trace.samplers += [
+    "include/opentelemetry/sdk/trace/samplers/always_off.h",
+    "include/opentelemetry/sdk/trace/samplers/always_off_factory.h",
+    "include/opentelemetry/sdk/trace/samplers/always_on.h",
+    "include/opentelemetry/sdk/trace/samplers/always_on_factory.h",
+    "include/opentelemetry/sdk/trace/samplers/parent.h",
+    "include/opentelemetry/sdk/trace/samplers/parent_factory.h",
+    "include/opentelemetry/sdk/trace/samplers/trace_id_ratio.h",
+    "include/opentelemetry/sdk/trace/samplers/trace_id_ratio_factory.h",
+]
+
+EXPORTS.opentelemetry.sdk.version += ["include/opentelemetry/sdk/version/version.h"]
+
+FINAL_LIBRARY = "xul"
