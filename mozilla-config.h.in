@@ -64,4 +64,6 @@
 #endif /* __MINGW32__ */
 #endif /* defined(CHROMIUM_SANDBOX_BUILD) && defined(XP_WIN) */
 
+#define OPENTELEMETRY_STL_VERSION 2017
+
 #endif /* MOZILLA_CONFIG_H */

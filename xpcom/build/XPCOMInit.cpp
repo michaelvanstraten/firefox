@@ -113,6 +113,8 @@
 
 #include "gfxPlatform.h"
 
+#include "mozilla/tracing/Init.h"
+
 using base::AtExitManager;
 using mozilla::ipc::BrowserProcessSubThread;
 
@@ -508,6 +510,8 @@ NS_InitXPCOM(nsIServiceManager** aResult, nsIFile* aBinDirectory,
 
   mozilla::BackgroundHangMonitor::Startup();
 
+  mozilla::tracing::Init();
+
   const MessageLoop* const loop = MessageLoop::current();
   sMainHangMonitor = new mozilla::BackgroundHangMonitor(
       loop->thread_name().c_str(), loop->transient_hang_timeout(),
@@ -567,6 +571,7 @@ NS_InitMinimalXPCOM() {
   mozilla::SharedThreadPool::InitStatics();
   mozilla::Telemetry::Init();
   mozilla::BackgroundHangMonitor::Startup();
+  mozilla::tracing::Init();
 
   return NS_OK;
 }

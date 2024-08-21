@@ -73,3 +73,4 @@ xpcom/tests/gtest/TestRacingServiceManager.cpp
 xpcom/tests/gtest/TestRWLock.cpp
 xpcom/tests/gtest/TestThrottledEventQueue.cpp
 xpcom/tests/gtest/TestTimers.cpp
+toolkit/components/tracing/tests/gtest/TestMultithreaded.cpp

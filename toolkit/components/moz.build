@@ -71,6 +71,7 @@ DIRS += [
     "startup",
     "statusfilter",
     "telemetry",
+    "tracing",
     "translation",
     "translations",
     "thumbnails",
