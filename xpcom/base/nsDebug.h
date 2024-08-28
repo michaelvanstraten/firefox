@@ -17,6 +17,9 @@
 #include "mozilla/Likely.h"
 #include <stdarg.h>
 
+#include "opentelemetry/trace/context.h"
+#include "opentelemetry/context/runtime_context.h"
+
 #ifdef DEBUG
 #  include "mozilla/ErrorNames.h"
 #  include "mozilla/IntegerPrintfMacros.h"
@@ -277,13 +280,17 @@ inline void MOZ_PretendNoReturn() MOZ_PRETEND_NORETURN_FOR_STATIC_ANALYSIS {}
 
 #endif
 
-#define NS_ENSURE_SUCCESS(res, ret)                                \
-  do {                                                             \
-    nsresult __rv = res; /* Don't evaluate |res| more than once */ \
-    if (NS_FAILED(__rv)) {                                         \
-      NS_ENSURE_SUCCESS_BODY(res, ret)                             \
-      return ret;                                                  \
-    }                                                              \
+#define NS_ENSURE_SUCCESS(res, ret)                                           \
+  do {                                                                        \
+    nsresult __rv = res; /* Don't evaluate |res| more than once */            \
+    if (NS_FAILED(__rv)) {                                                    \
+      auto activeSpan = opentelemetry::trace::GetSpan(                        \
+          opentelemetry::context::RuntimeContext::GetCurrent());              \
+      activeSpan->AddEvent("no-op event",                                     \
+                           {{"__file__", __FILE__}, {"__line__", __LINE__}}); \
+      NS_ENSURE_SUCCESS_BODY(res, ret)                                        \
+      return ret;                                                             \
+    }                                                                         \
   } while (false)
 
 #define NS_ENSURE_SUCCESS_VOID(res)    \

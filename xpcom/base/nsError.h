@@ -13,6 +13,8 @@
 
 #include "mozilla/Attributes.h"
 #include "mozilla/Likely.h"
+#include "opentelemetry/context/runtime_context.h"
+#include "opentelemetry/trace/context.h"
 
 #include <stdint.h>
 
@@ -27,6 +29,12 @@
  */
 
 inline uint32_t NS_FAILED_impl(nsresult aErr) {
+  if ((bool)static_cast<uint32_t>(aErr) & 0x80000000) {
+    auto activeSpan = opentelemetry::trace::GetSpan(
+        opentelemetry::context::RuntimeContext::GetCurrent());
+    activeSpan->AddEvent("no-op event",
+                         {{"__file__", __FILE__}, {"__line__", __LINE__}});
+  }
   return static_cast<uint32_t>(aErr) & 0x80000000;
 }
 #define NS_FAILED(_nsresult) ((bool)MOZ_UNLIKELY(NS_FAILED_impl(_nsresult)))

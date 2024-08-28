@@ -3,10 +3,13 @@
 
 #pragma once
 
+#include <atomic>
 #include "opentelemetry/context/context.h"
 #include "opentelemetry/nostd/shared_ptr.h"
 #include "opentelemetry/trace/default_span.h"
 #include "opentelemetry/version.h"
+
+extern std::atomic<uint64_t> g_GetSpanCount;
 
 OPENTELEMETRY_BEGIN_NAMESPACE
 namespace trace
@@ -15,6 +18,7 @@ namespace trace
 // Get Span from explicit context
 inline nostd::shared_ptr<Span> GetSpan(const context::Context &context) noexcept
 {
+  g_GetSpanCount.fetch_add(1);
   context::ContextValue span = context.GetValue(kSpanKey);
   if (nostd::holds_alternative<nostd::shared_ptr<Span>>(span))
   {

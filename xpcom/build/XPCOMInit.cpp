@@ -602,6 +602,8 @@ NS_ShutdownXPCOM(nsIServiceManager* aServMgr) {
   return mozilla::ShutdownXPCOM(aServMgr);
 }
 
+std::atomic<uint64_t> g_GetSpanCount(0);
+
 namespace mozilla {
 
 void SetICUMemoryFunctions() {
@@ -616,6 +618,9 @@ void SetICUMemoryFunctions() {
 }
 
 nsresult ShutdownXPCOM(nsIServiceManager* aServMgr) {
+  printf("`opentelemetry::trace::GetSpan` got called %llu times.\n",
+         static_cast<unsigned long long>(g_GetSpanCount.load()));
+
   // Make sure the hang monitor is enabled for shutdown.
   BackgroundHangMonitor().NotifyActivity();
 
