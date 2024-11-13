@@ -113,6 +113,9 @@
 
 #include "gfxPlatform.h"
 
+#include <random>
+#include "nsMemoryPressure.h"
+
 using base::AtExitManager;
 using mozilla::ipc::BrowserProcessSubThread;
 
@@ -254,6 +257,48 @@ static void InitializeJS() {
     return res;                        \
   }                                    \
   MOZ_CRASH(message);
+
+mozilla::LazyLogModule gSimulatePressureLog("SimulatePressure");
+
+uint32_t GetRandomInterval(uint32_t min_ms, uint32_t max_ms) {
+  static std::random_device rd;
+  static std::mt19937 gen(rd());
+  std::uniform_int_distribution<uint32_t> dis(min_ms, max_ms);
+  return dis(gen);
+}
+
+void ClearMemoryPressure(nsITimer*) {
+  MOZ_LOG(gSimulatePressureLog, mozilla::LogLevel::Info,
+          ("Clearing memory pressure (NoPressure state)."));
+
+  MOZ_ASSERT(NS_NotifyOfMemoryPressure(MemoryPressureState::NoPressure));
+}
+
+void TriggerMemoryPressure(nsITimer*) {
+  MOZ_CRASH("here");
+  MOZ_LOG(gSimulatePressureLog, mozilla::LogLevel::Info,
+          ("Triggering memory pressure notification (LowMemory)."));
+
+  MOZ_ASSERT(NS_NotifyOfMemoryPressure(MemoryPressureState::LowMemory));
+
+  uint32_t clearPressureInterval = 300;
+  MOZ_ASSERT(NS_NewTimerWithCallback(
+      ClearMemoryPressure,
+      mozilla::TimeDuration::FromMilliseconds(clearPressureInterval),
+      nsITimer::TYPE_ONE_SHOT, "SHARED_LIB_CLEAR_PRESSURE"));
+
+  MOZ_LOG(gSimulatePressureLog, mozilla::LogLevel::Info,
+          ("Scheduled NoPressure trigger in %u ms", clearPressureInterval));
+
+  uint32_t randomInterval = GetRandomInterval(500, 20000);
+  MOZ_ASSERT(NS_NewTimerWithCallback(
+      TriggerMemoryPressure,
+      mozilla::TimeDuration::FromMilliseconds(randomInterval),
+      nsITimer::TYPE_ONE_SHOT, "SHARED_LIB_SIMULATE_PRESSURE"));
+
+  MOZ_LOG(gSimulatePressureLog, mozilla::LogLevel::Info,
+          ("Next LowMemory trigger in %u ms", randomInterval));
+}
 
 // Note that on OSX, aBinDirectory will point to .app/Contents/Resources/browser
 EXPORT_XPCOM_API(nsresult)
@@ -518,6 +563,19 @@ NS_InitXPCOM(nsIServiceManager** aResult, nsIFile* aBinDirectory,
   if (aInitJSContext) {
     xpc::InitializeJSContext();
   }
+
+  nsCOMPtr<nsISerialEventTarget> simulatePressureEventTarget;
+  MOZ_ASSERT(NS_CreateBackgroundTaskQueue(
+      "SimulatePressure", getter_AddRefs(simulatePressureEventTarget)));
+
+  // Initial call with a random interval
+  uint32_t initialInterval = 1000;
+  MOZ_ASSERT(NS_NewTimerWithCallback(
+      TriggerMemoryPressure,
+      mozilla::TimeDuration::FromMilliseconds(initialInterval),
+      nsITimer::TYPE_ONE_SHOT, "SHARED_LIB_SIMULATE_PRESSURE"));
+  MOZ_LOG(gSimulatePressureLog, mozilla::LogLevel::Info,
+          ("Initial trigger in %u ms", initialInterval));
 
   return NS_OK;
 }

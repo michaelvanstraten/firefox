@@ -61,8 +61,14 @@ class MOZ_RAII SharedLibrariesLock {
 MOZ_RUNINIT mozilla::baseprofiler::detail::BaseProfilerMutex
     SharedLibrariesLock::sSharedLibrariesMutex;
 
+std::atomic_uint gNumberOfSharedLibrariesAdd;
+std::atomic_uint gNumberOfSharedLibrariesRemove;
+
 static void SharedLibraryAddImage(const struct mach_header* mh,
                                   intptr_t vmaddr_slide) {
+  uint32_t addCount = gNumberOfSharedLibrariesAdd.fetch_add(1) + 1;
+  LOG("[SHARED_LIB_ADD] Called SharedLibraryAddImage %d times", addCount);
+
   // NOTE: Presumably for backwards-compatibility reasons, this function accepts
   // a mach_header even on 64-bit where it ought to be a mach_header_64. We cast
   // it to the right type here.
@@ -80,10 +86,16 @@ static void SharedLibraryAddImage(const struct mach_header* mh,
 
   NativeSharedLibrary lib = {header, info.dli_fname};
   sSharedLibrariesList->push_back(lib);
+
+  LOG("[SHARED_LIB_ADD] Added library path: %s", info.dli_fname);
 }
 
 static void SharedLibraryRemoveImage(const struct mach_header* mh,
                                      intptr_t vmaddr_slide) {
+  uint32_t removeCount = gNumberOfSharedLibrariesRemove.fetch_add(1) + 1;
+  LOG("[SHARED_LIB_REMOVE] Called SharedLibraryRemoveImage %d times",
+      removeCount);
+
   // NOTE: Presumably for backwards-compatibility reasons, this function accepts
   // a mach_header even on 64-bit where it ought to be a mach_header_64. We cast
   // it to the right type here.
@@ -98,6 +110,8 @@ static void SharedLibraryRemoveImage(const struct mach_header* mh,
   for (uint32_t i = 0; i < count; ++i) {
     if ((*sSharedLibrariesList)[i].header == header) {
       sSharedLibrariesList->erase(sSharedLibrariesList->begin() + i);
+      std::string libPath = (*sSharedLibrariesList)[i].path;
+      LOG("[SHARED_LIB_REMOVE] Removed library path: %s", libPath.c_str());
       return;
     }
   }
