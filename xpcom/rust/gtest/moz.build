@@ -11,4 +11,8 @@ UNIFIED_SOURCES += [
     "xpcom/TestXpcom.cpp",
 ]
 
+LOCAL_INCLUDES += [
+    "../../tests/gtest/"
+]
+
 FINAL_LIBRARY = "xul-gtest"

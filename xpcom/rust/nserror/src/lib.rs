@@ -5,6 +5,7 @@
 use nsstring::{nsACString, nsCString};
 use std::error::Error;
 use std::fmt;
+use std::io;
 
 /// The type of errors in gecko.  Uses a newtype to provide additional type
 /// safety in Rust and #[repr(transparent)] to ensure the same representation
@@ -67,6 +68,34 @@ where
 }
 
 impl Error for nsresult {}
+
+/// Implement a conversion from `nsresult` to `std::io::Error` to make it easier
+/// to use in some places. This generally just wraps the error in
+/// `ErrorKind::Other`, but may specify an error kind if it is known.
+///
+/// Can only be used on errored nsresult values.
+impl From<nsresult> for io::Error {
+    fn from(error: nsresult) -> io::Error {
+        assert!(error.failed());
+        // Map various errors which might come up to more specific
+        // std::io::ErrorKind values.
+        //
+        // This is far from a complete mapping, and new mappings can be added if
+        // they are found to be useful in the future.
+        let kind = match error {
+            NS_ERROR_INVALID_ARG => io::ErrorKind::InvalidInput,
+            NS_ERROR_OUT_OF_MEMORY => io::ErrorKind::OutOfMemory,
+            NS_BASE_STREAM_WOULD_BLOCK => io::ErrorKind::WouldBlock,
+            NS_ERROR_FILE_NOT_FOUND => io::ErrorKind::NotFound,
+            NS_ERROR_FILE_READ_ONLY | NS_ERROR_FILE_ACCESS_DENIED => {
+                io::ErrorKind::PermissionDenied
+            }
+            NS_ERROR_FILE_ALREADY_EXISTS => io::ErrorKind::AlreadyExists,
+            _ => io::ErrorKind::Other,
+        };
+        io::Error::new(kind, error)
+    }
+}
 
 extern "C" {
     fn Gecko_GetErrorName(rv: nsresult, cstr: *mut nsACString);

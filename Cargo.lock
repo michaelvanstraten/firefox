@@ -4238,6 +4238,7 @@ version = "0.1.0"
 dependencies = [
  "async-task",
  "cstr",
+ "futures-io",
  "libc",
  "log",
  "nserror",
@@ -4250,6 +4251,7 @@ name = "moz_task-gtest"
 version = "0.1.0"
 dependencies = [
  "moz_task",
+ "xpcom",
 ]
 
 [[package]]

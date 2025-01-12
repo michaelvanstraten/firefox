@@ -3,10 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use std::{
-    future::Future,
-    pin::Pin,
-    task::{Context, Poll, Waker},
+    future::Future, pin::Pin, task::{Context, Poll, Waker}
 };
+use xpcom::{
+    interfaces::{nsIInputStream},
+    RefPtr,
+};
+
 
 /// Demo `Future` to demonstrate executing futures to completion via `nsIEventTarget`.
 struct MyFuture {
@@ -74,4 +77,11 @@ pub extern "C" fn Rust_Future(it_worked: *mut bool) {
     unsafe {
         moz_task::gtest_only::spin_event_loop_until("Rust_Future", future).unwrap();
     };
+}
+
+#[no_mangle]
+pub extern "C" fn Rust_ReadFromStream(ffi_input_stream: *const nsIInputStream) {
+    let mut native_input_stream = moz_task::InputStream::new(unsafe {RefPtr::from_raw(ffi_input_stream).unwrap() });
+
+    println!("{}", native_input_stream.available_xpcom().unwrap());
 }

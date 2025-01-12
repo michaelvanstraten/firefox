@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 moz_task = { path = "../../moz_task" }
+xpcom = { path = "../../xpcom" }
 
 [lib]
 path = "test.rs"

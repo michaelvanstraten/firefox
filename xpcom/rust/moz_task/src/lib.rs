@@ -14,6 +14,8 @@ mod executor;
 pub use executor::{
     spawn, spawn_blocking, spawn_local, spawn_onto, spawn_onto_blocking, AsyncTask, TaskBuilder,
 };
+mod stream;
+pub use stream::{InputStream, OutputStream};
 
 // Expose functions intended to be used only in gtest via this module.
 // We don't use a feature gate here to stop the need to compile all crates that

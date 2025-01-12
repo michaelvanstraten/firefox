@@ -14,3 +14,4 @@ async-task = { version = "4.3" }
 nserror = { path = "../nserror" }
 nsstring = { path = "../nsstring" }
 xpcom = { path = "../xpcom" }
+futures-io = "0.3.28"
