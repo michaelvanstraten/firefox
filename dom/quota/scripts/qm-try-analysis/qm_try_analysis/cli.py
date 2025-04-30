@@ -7,6 +7,7 @@ import click
 from qm_try_analysis.analyze import analyze_qm_failures
 from qm_try_analysis.fetch import fetch_qm_failures
 from qm_try_analysis.report import report_qm_failures
+from qm_try_analysis.statistics import statistics_for_qm_try_data
 
 
 @click.group(context_settings={"show_default": True})
@@ -17,6 +18,7 @@ def cli():
 cli.add_command(fetch_qm_failures, "fetch")
 cli.add_command(analyze_qm_failures, "analyze")
 cli.add_command(report_qm_failures, "report")
+cli.add_command(statistics_for_qm_try_data, "statistics")
 
 if __name__ == "__main__":
     cli()
