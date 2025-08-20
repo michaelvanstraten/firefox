@@ -34,5 +34,7 @@ TEST_DIRS += ["tests/gtest"]
 
 FINAL_LIBRARY = "xul"
 
+SPHINX_TREES["docs"] = "docs"
+
 with Files("**"):
     BUG_COMPONENT = ("Toolkit", "Gecko Trace")

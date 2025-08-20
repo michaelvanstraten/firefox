@@ -1,0 +1,68 @@
+---
+config:
+  look: handDrawn
+  theme: base
+  flowchart:
+    wrappingWidth: -1
+---
+
+flowchart TD
+  subgraph Firefox
+    subgraph Parent_Process["Parent Process"]
+      is1[Instrumentation Sites]
+      is1 -- Start / End spans --> lsp1[LocalSpanProcessor]
+      lsp1 -- Ended trace --> pse1[ProtobufSpanExporter]
+    end
+
+    subgraph Content_Process_1["Content Process #1"]
+      is2[Instrumentation Sites]
+      is2 -- Start / End spans --> lsp2[LocalSpanProcessor]
+      lsp2 -- Ended trace --> pse2[ProtobufSpanExporter]
+    end
+
+    subgraph Content_Process_2["Content Process #2"]
+      is3[Instrumentation Sites]
+      is3 -- Start / End spans --> lsp3[LocalSpanProcessor]
+      lsp3 -- Ended trace --> pse3[ProtobufSpanExporter]
+    end
+
+    pse1 --> gtc[GlobalTraceCollector]
+    pse2 & pse3 -. IPC (PContent) .-> gtc
+    gtc -- Traces metric (aggregated) --> glean[Glean SDK]
+  end
+
+  subgraph GCP
+    ti[[Telemetry Ingestion Endpoint]]
+
+    subgraph BigQuery
+      raw[(mozdata.firefox_desktop.traces)]
+      airflow[[Airflow Job]]
+      full[(mozdata.firefox_desktop.traces_full)]
+      summary[("`
+        mozdata.firefox_desktop.traces_root_scopes
+        mozdata.firefox_desktop.traces_top_events_by_hits
+        mozdata.firefox_desktop.traces_top_scopes_by_span_count
+        mozdata.firefox_desktop.traces_top_spans_by_count
+      `")]
+    end
+
+    glean -. Telemetry ping .-> ti
+    ti -. Writes raw pings .-> raw
+    raw -. Raw pings .-> airflow
+
+    airflow -- Fully reconstructed traces --> full
+    airflow -- "<ul style="text-align:left; margin: 0px; padding: 5px;"><b>Extract:</b><li>Root instrumentation scope</li><li>Top-most hit events</li><li>Top-most instrumentation scopes</li><li>Top-most spans</li></ul>" --> summary
+  end
+
+  subgraph Consumers["Consumers & Interfaces"]
+    direction LR
+    ui[[Gecko Trace UI]]
+    bugbot[[Bugzilla Bot]]
+  end
+
+  summary <-. Queries .-> ui
+  full <-. Queries .-> ui
+
+  summary -. Feeds scope report .-> bugbot
+  bugbot -. Posts comments .-> bugzilla[Bugzilla]
+

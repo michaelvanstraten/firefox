@@ -34,3 +34,4 @@ This is the nascent documentation of the Toolkit code that is shared across Fire
    components/antitracking/anti-tracking/index
    components/translations/index
    components/sessionstore/index
+   components/gecko-trace/docs/index
