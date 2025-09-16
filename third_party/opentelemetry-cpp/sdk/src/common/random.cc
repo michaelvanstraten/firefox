@@ -26,6 +26,8 @@ class TlsRandomNumberGenerator
 public:
   TlsRandomNumberGenerator() noexcept
   {
+	static std::atomic_flag flag;
+
     Seed();
     if (!flag.test_and_set())
     {
@@ -33,25 +35,21 @@ public:
     }
   }
 
-  static FastRandomNumberGenerator &engine() noexcept { return engine_; }
+  static FastRandomNumberGenerator &engine() noexcept { 
+	  static thread_local FastRandomNumberGenerator engine_{};
+	  return engine_; 
+  }
 
 private:
-  static std::atomic_flag flag;
-
-  static thread_local FastRandomNumberGenerator engine_;
-
   static void OnFork() noexcept { Seed(); }
 
   static void Seed() noexcept
   {
     std::random_device random_device;
     std::seed_seq seed_seq{random_device(), random_device(), random_device(), random_device()};
-    engine_.seed(seed_seq);
+    engine().seed(seed_seq);
   }
 };
-
-std::atomic_flag TlsRandomNumberGenerator::flag;
-thread_local FastRandomNumberGenerator TlsRandomNumberGenerator::engine_{};
 }  // namespace
 
 FastRandomNumberGenerator &Random::GetRandomNumberGenerator() noexcept
