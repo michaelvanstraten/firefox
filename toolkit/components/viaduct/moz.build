@@ -15,6 +15,7 @@ EXPORTS.mozilla += [
 ]
 
 include("/ipc/chromium/chromium-config.mozbuild")
+include("/toolkit/components/protobuf/protobuf-config.mozbuild")
 
 DEFINES["GOOGLE_PROTOBUF_NO_RTTI"] = True
 DEFINES["GOOGLE_PROTOBUF_NO_STATIC_INITIALIZER"] = True

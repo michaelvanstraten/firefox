@@ -30,6 +30,7 @@ IPDL_SOURCES += [
 ]
 
 include("/ipc/chromium/chromium-config.mozbuild")
+include("/toolkit/components/protobuf/protobuf-config.mozbuild")
 
 SOURCES += [
     "AutoMemMap.cpp",

@@ -9,8 +9,8 @@ origin:
   name: protobuf
   description: Protocol Buffers - Google's data interchange format 
   url: https://protobuf.dev/
-  release: v21.6 (2022-09-13T13:50:08-07:00).
-  revision: v21.6
+  release: v32.1 (2025-09-11T10:24:52-07:00).
+  revision: v32.1
   license: BSD-3-Clause
 
 vendoring:
@@ -22,7 +22,7 @@ vendoring:
   keep:
     - scripts/
     - patches/
-    - README.txt
+    - README.md
   exclude:
     - "**"
     - src/google/protobuf/**/*_test*
@@ -36,7 +36,12 @@ vendoring:
   include:
     - LICENSE
     - src/google
+    - third_party/utf8_range
   update-actions:
+    - action: run-script
+      script: "{yaml_dir}/scripts/generate_exports.py"
+      cwd: "{yaml_dir}"
+      args: ["src", "src/moz.build"]
     - action: run-script
       script: "{yaml_dir}/scripts/generate_files.py"
       cwd: "{yaml_dir}"

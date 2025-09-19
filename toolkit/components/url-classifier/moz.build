@@ -104,3 +104,4 @@ with Files("docs/**"):
     SCHEDULES.exclusive = ["docs"]
 
 include("/ipc/chromium/chromium-config.mozbuild")
+include("/toolkit/components/protobuf/protobuf-config.mozbuild")
