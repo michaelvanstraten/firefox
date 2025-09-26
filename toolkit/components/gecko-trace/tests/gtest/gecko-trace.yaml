@@ -5,7 +5,7 @@
 ---
 events:
   test.simple:
-    description: "Simple test event with basic attributes"
+    description: "Simple test event with basic scalar attributes"
     attributes:
       test_string:
         type: string
@@ -17,8 +17,67 @@ events:
         type: boolean
         description: "Test boolean attribute"
 
+  test.with_display_name:
+    display_name: "Custom Display Name Event"
+    description: "Event with custom display name to test display_name property"
+    attributes:
+      basic_attr:
+        type: string
+        description: "Basic attribute for display name test"
+
+  test.arrays:
+    description: "Event testing all array attribute types"
+    attributes:
+      string_array:
+        type: array
+        items:
+          type: string
+        description: "Array of strings"
+      integer_array:
+        type: array
+        items:
+          type: integer
+        description: "Array of integers"
+      boolean_array:
+        type: array
+        items:
+          type: boolean
+        description: "Array of booleans"
+
+  test.naming_patterns:
+    description: "Event testing various valid naming patterns"
+    attributes:
+      simple_name:
+        type: string
+        description: "Simple snake_case name"
+      dotted.name:
+        type: integer
+        description: "Name with dots"
+      name_with_numbers123:
+        type: boolean
+        description: "Name with numbers"
+      complex.dotted_name456.end:
+        type: string
+        description: "Complex name with dots, underscores, and numbers"
+
+  test.single_inheritance:
+    description: "Event with single inheritance"
+    inherits_from: [test.simple]
+    attributes:
+      additional_data:
+        type: string
+        description: "Additional attribute for single inheritance test"
+
+  test.multiple_inheritance:
+    description: "Event with multiple inheritance"
+    inherits_from: [test.simple, test.with_display_name]
+    attributes:
+      multi_inherit_attr:
+        type: integer
+        description: "Attribute specific to multiple inheritance test"
+
   test.complex:
-    description: "Test event with multiple inheritance"
+    description: "Test event with multiple inheritance and arrays"
     inherits_from: [test.simple]
     attributes:
       test_data:
@@ -27,6 +86,11 @@ events:
       retry.count:
         type: integer
         description: "Number of retries attempted"
+      error_codes:
+        type: array
+        items:
+          type: integer
+        description: "Array of error codes encountered"
 
   test.deep_inheritance:
     description: "Test event with deep multi-level inheritance"
@@ -35,3 +99,33 @@ events:
       extra.info:
         type: string
         description: "Additional information for deep inheritance test"
+      debug_flags:
+        type: array
+        items:
+          type: boolean
+        description: "Array of debug flags"
+
+  test.complex_multiple_inheritance:
+    description: "Event inheriting from multiple parents including arrays"
+    inherits_from: [test.arrays, test.naming_patterns]
+    attributes:
+      final_attr:
+        type: string
+        description: "Final attribute for complex multiple inheritance"
+
+  test.123.numbered_event:
+    description: "Event with numbers in name"
+    attributes:
+      attr456:
+        type: integer
+        description: "Attribute with numbers in name"
+
+  test.deep.nested.event.name:
+    description: "Event with deeply nested dotted name"
+    attributes:
+      deeply.nested.attr:
+        type: string
+        description: "Deeply nested attribute name"
+      simple_attr:
+        type: boolean
+        description: "Simple attribute mixed with nested naming"

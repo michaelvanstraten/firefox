@@ -10,9 +10,7 @@
 
 namespace otel = opentelemetry;
 
-namespace mozilla::gecko_trace::tests {
-
-class TestWithInMemorySpanExporter : public ::testing::Test {
+class GeckoTraceTestFixture : public ::testing::Test {
  protected:
   void SetUp() override {
     auto exporter =
@@ -25,9 +23,11 @@ class TestWithInMemorySpanExporter : public ::testing::Test {
 
     otel::trace::Provider::SetTracerProvider(std::move(provider));
   }
+
+  auto GetSpans() { return mSpanData->GetSpans(); }
+
+ private:
   std::shared_ptr<otel::exporter::memory::InMemorySpanData> mSpanData;
 };
-
-}  // namespace mozilla::gecko_trace::tests
 
 #endif  // GECKO_TRACE_GTEST_COMMON_H
