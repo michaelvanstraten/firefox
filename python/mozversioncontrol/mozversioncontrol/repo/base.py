@@ -393,3 +393,7 @@ class Repository(abc.ABC):
     def configure(self, state_dir: Path, update_only: bool = False):
         """Perform initial VCS setup, applying sensible defaults for configuration."""
         pass
+
+    @abc.abstractmethod
+    def add_hook(self, phase: str):
+        pass
