@@ -18013,6 +18013,14 @@
   value: false
   mirror: always
 
+# The maximun of bytes the gecko trace system can transmit over telemetry per
+# client.
+- name: toolkit.gecko-trace.bandwidth_cap
+  type: RelaxedAtomicInt32
+  value: 500_000
+  mirror: always
+  rust: true
+
 # Returns true if BHR is disabled.
 - name: toolkit.content-background-hang-monitor.disabled
   type: bool
